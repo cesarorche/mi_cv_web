@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+César Calvo | SW QA Tester Junior
+César Calvo Martínez
+SW QA Tester Junior
+Especializado en testing funcional, APIs y rendimiento. Enfocado en
+evolucionar hacia automatización de pruebas y calidad continua.
+Contactar
+Sobre mí
+QA Tester con experiencia en proyectos reales en entorno Agile,
+trabajando con clientes del sector retail.
+
+Combino testing funcional, pruebas de API y validación de datos con
+conocimientos de desarrollo para avanzar hacia automatización.
+Experiencia
+        <div class="card">
+            <h3>QA Tester - itegGO Consulting</h3>
+            <p> Junio 2026 - Actualidad</p>
+            <ul>
+                <li>Diseño y ejecución de planes de prueba</li>
+                <li>Testing de APIs con Postman</li>
+                <li>Validación de datos (BigQuery, SQL)</li>
+                <li>Gestión de incidencias (Jira, Xray)</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>Becario QA & Arquitectura - Prosegur</h3>
+            <p>Marzo 2026 - Junio 2026</p>
+            <ul>
+                <li>Testing de rendimiento con JMeter</li>
+                <li>Análisis de métricas</li>
+                <li>Calidad de código (SonarQube)</li>
+            </ul>
+        </div>
+    </div>
+
+Skills
+        <span>QA Testing</span>
+        <span>API Testing</span>
+        <span>JMeter</span>
+        <span>SQL</span>
+        <span>Postman</span>
+        <span>Jira</span>
+        <span>Java</span>
+        <span>Python</span>
+        <span>JavaScript</span>
+    </div>
+
+Proyectos
+        <div class="card">
+            <h3>Workyroom</h3>
+            <p>Proyecto de fin de grado enfocado en gestión de espacios de trabajo.</p>
+        </div>
+
+        <div class="card">
+            <h3>Tienda Ciclismo</h3>
+            <p>Proyecto web de e-commerce con gestión de productos.</p>
+        </div>
+    </div>
+
+Contacto
+cesarorche@hotmail.com GitHub LinkedIn
