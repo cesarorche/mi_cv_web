@@ -1,152 +1,438 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>César Calvo | QA Tester</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>César Calvo | QA Tester</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 46'%3E%3Crect width='46' height='46' rx='10' fill='%230a0e17'/%3E%3Cpath d='M15 23 L20.5 28.5 L31 17' stroke='%2334d399' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #e2e8f0;
-      line-height: 1.6;
-    }
+<style>
+  :root{
+    --bg:#0a0e17;
+    --surface:#111827;
+    --surface-2:#141b2d;
+    --border:#232c3f;
+    --border-soft:#1b2334;
+    --text:#e7ecf3;
+    --text-muted:#8791a3;
+    --text-faint:#5b6577;
+    --cyan:#4fc3f7;
+    --cyan-dim:#38bdf8;
+    --green:#34d399;
+    --green-dim:#22c55e;
+    --font-mono:'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --font-sans:'Inter', system-ui, -apple-system, sans-serif;
+  }
 
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 20px;
-    }
+  *{box-sizing:border-box;}
 
-    h1 {
-      color: #38bdf8;
-      margin-bottom: 5px;
-    }
+  body{
+    margin:0;
+    background:var(--bg);
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(79,195,247,0.09), transparent 40%),
+      radial-gradient(circle at 85% 8%, rgba(52,211,153,0.07), transparent 35%);
+    background-attachment:fixed;
+    color:var(--text);
+    font-family:var(--font-sans);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
 
-    h2 {
-      margin-top: 30px;
-      color: #22c55e;
-      border-bottom: 1px solid #334155;
-      padding-bottom: 5px;
-    }
+  .bg-grid{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px);
+    background-size:22px 22px;
+    -webkit-mask-image:radial-gradient(circle at 50% 0%, black, transparent 70%);
+    mask-image:radial-gradient(circle at 50% 0%, black, transparent 70%);
+    opacity:.5;
+  }
 
-    .subtitle {
-      color: #94a3b8;
-      margin-bottom: 20px;
-    }
+  .terminal-window{
+    position:relative; z-index:1;
+    max-width:900px;
+    margin:40px auto;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 30px 60px -25px rgba(0,0,0,.65), 0 0 0 1px rgba(255,255,255,.02);
+  }
 
-    .card {
-      background: #1e293b;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 15px;
-    }
+  .term-bar{
+    display:flex; align-items:center; gap:10px;
+    padding:12px 18px;
+    background:linear-gradient(180deg,#161d2e,#121826);
+    border-bottom:1px solid var(--border);
+  }
+  .term-dots{display:flex; gap:7px;}
+  .term-dots span{width:11px; height:11px; border-radius:50%; display:inline-block;}
+  .term-dots .red{background:#ff5f56;}
+  .term-dots .yellow{background:#ffbd2e;}
+  .term-dots .green{background:#27c93f;}
+  .term-path{
+    margin-left:4px;
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    color:var(--text-faint);
+    letter-spacing:.02em;
+  }
 
-    ul {
-      padding-left: 20px;
-    }
+  .container{max-width:900px; margin:auto; padding:36px 44px 56px;}
 
-    .skills span {
-      display: inline-block;
-      background: #334155;
-      padding: 6px 10px;
-      border-radius: 6px;
-      margin: 5px 5px 0 0;
-      font-size: 14px;
-    }
+  .hero-top{display:flex; align-items:center; gap:18px; margin-bottom:16px;}
+  .logo-mark{flex-shrink:0;}
 
-    .contact a {
-      color: #38bdf8;
-      text-decoration: none;
-      margin-right: 10px;
-    }
-  </style>
+  h1{
+    font-family:var(--font-mono);
+    font-size:clamp(1.4rem, 2.4vw, 1.9rem);
+    font-weight:700;
+    color:var(--text);
+    margin:0 0 4px;
+    letter-spacing:-.01em;
+  }
+
+  .subtitle{
+    font-family:var(--font-mono);
+    color:var(--cyan);
+    font-size:.95rem;
+    margin:0;
+    letter-spacing:.02em;
+  }
+  .subtitle::before{content:""; color:var(--text-faint);}
+
+  .intro{
+    color:var(--text-muted);
+    max-width:60ch;
+    margin:18px 0 0;
+    font-size:.98rem;
+  }
+
+  .hero-actions{display:flex; flex-wrap:wrap; gap:12px; margin-top:24px;}
+
+  .btn{
+    font-family:var(--font-mono);
+    font-size:.83rem;
+    font-weight:600;
+    padding:10px 18px;
+    border-radius:9px;
+    border:1px solid var(--border);
+    cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px;
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease, color .18s ease;
+    text-decoration:none;
+    background:var(--surface-2);
+    color:var(--text);
+  }
+  .btn-primary{
+    background:linear-gradient(135deg, var(--green-dim), var(--green));
+    color:#08150f;
+    border-color:transparent;
+  }
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 24px -10px rgba(52,211,153,.5);}
+  .btn-ghost:hover{border-color:var(--cyan-dim); color:var(--cyan); transform:translateY(-2px);}
+  button:focus-visible, a:focus-visible{outline:2px solid var(--cyan); outline-offset:2px;}
+
+  h2{
+    font-family:var(--font-mono);
+    font-size:1.05rem;
+    font-weight:700;
+    color:var(--text);
+    margin:0 0 16px;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--border-soft);
+    display:flex; align-items:center; gap:9px;
+  }
+  h2::before{content:"//"; color:var(--green); font-weight:700;}
+
+  .section{
+    margin-top:44px;
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .section.visible{opacity:1; transform:none;}
+  @media (prefers-reduced-motion:reduce){
+    .section{opacity:1; transform:none; transition:none;}
+  }
+
+  .card{
+    background:var(--surface-2);
+    border:1px solid var(--border-soft);
+    border-left:3px solid var(--cyan-dim);
+    border-radius:10px;
+    padding:18px 20px;
+    margin-bottom:16px;
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 16px 30px -14px rgba(0,0,0,.55);
+    border-left-color:var(--green);
+  }
+  .card h3{margin:0 0 6px; font-size:1rem; font-family:var(--font-mono); color:var(--text);}
+  .card .meta{
+    display:flex; align-items:center; gap:8px; margin:0 0 12px;
+    font-family:var(--font-mono); font-size:.8rem; color:var(--text-faint);
+  }
+
+  .status-dot{
+    width:8px; height:8px; border-radius:50%; background:var(--green); display:inline-block;
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(52,211,153,.55);}
+    70%{box-shadow:0 0 0 8px rgba(52,211,153,0);}
+    100%{box-shadow:0 0 0 0 rgba(52,211,153,0);}
+  }
+  @media (prefers-reduced-motion:reduce){ .status-dot{animation:none;} }
+
+  ul{list-style:none; padding-left:0; margin:0; display:grid; gap:7px;}
+  li{position:relative; padding-left:20px; font-size:.93rem;}
+  li::before{content:"▸"; position:absolute; left:0; color:var(--cyan-dim); font-family:var(--font-mono);}
+
+  .skills{display:flex; flex-wrap:wrap; gap:8px;}
+  .skills span{
+    font-family:var(--font-mono);
+    font-size:.78rem;
+    padding:7px 12px;
+    border-radius:7px;
+    background:var(--surface-2);
+    border:1px solid var(--border-soft);
+    color:var(--text-muted);
+    transition:all .18s ease;
+    display:inline-block;
+  }
+  .skills span::before{content:"#"; color:var(--text-faint); margin-right:2px;}
+  .skills span:hover{color:var(--text); border-color:var(--green); background:var(--surface); transform:translateY(-2px);}
+
+  .contact-card{
+    display:flex; flex-direction:column; gap:16px;
+    background:var(--surface-2);
+    border:1px solid var(--border-soft);
+    border-radius:12px;
+    padding:22px 24px;
+  }
+  .contact-row{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; font-size:.95rem;}
+  .icon-btn{
+    background:transparent; border:1px solid var(--border-soft); color:var(--text-muted);
+    border-radius:7px; padding:6px 12px; cursor:pointer;
+    font-family:var(--font-mono); font-size:.75rem; transition:all .18s ease;
+  }
+  .icon-btn:hover{color:var(--cyan); border-color:var(--cyan-dim);}
+  .social-links{display:flex; gap:10px; flex-wrap:wrap;}
+  .social-links a{
+    color:var(--text); text-decoration:none;
+    background:var(--surface); border:1px solid var(--border-soft);
+    padding:9px 16px; border-radius:8px; font-size:.9rem;
+    display:inline-flex; align-items:center; gap:8px;
+    transition:all .18s ease;
+  }
+  .social-links a:hover{border-color:var(--cyan-dim); color:var(--cyan); transform:translateY(-2px);}
+
+  .toast{
+    position:fixed; bottom:24px; left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--surface); border:1px solid var(--green); color:var(--text);
+    padding:10px 18px; border-radius:9px;
+    font-family:var(--font-mono); font-size:.8rem;
+    opacity:0; pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+    z-index:50;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  @media print{
+    .bg-grid, .term-bar, .hero-actions, .icon-btn, .toast{display:none !important;}
+    body{background:#fff !important; color:#111 !important;}
+    .terminal-window{box-shadow:none; border:none; margin:0; max-width:100%;}
+    .card, .skills span, .social-links a{background:#fff !important; color:#111 !important; border-color:#ccc !important;}
+    h1,h2,h3,.subtitle,.card h3{color:#111 !important;}
+    a{color:#111 !important; text-decoration:underline;}
+  }
+
+  @media (max-width:600px){
+    .container{padding:28px 22px 44px;}
+    .hero-top{flex-direction:column; align-items:flex-start; gap:10px;}
+    .contact-row{flex-direction:column; align-items:flex-start;}
+  }
+</style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="bg-grid" aria-hidden="true"></div>
 
-  <h1>César Calvo Martínez</h1>
-  <p class="subtitle">SW QA Tester Junior</p>
-
-  <p>
-    Especializado en testing funcional, APIs y rendimiento. Enfocado en evolucionar hacia automatización de pruebas y calidad continua.
-  </p>
-
-  <h2>Sobre mí</h2>
-  <p>
-    QA Tester Junior con formación en Desarrollo de Aplicaciones Web (DAW), dando mis primeros pasos profesionales en testing funcional y manual, pruebas de API y gestión de incidencias con Jira.
-  </p>
-
-  <h2>Experiencia</h2>
-
-  <div class="card">
-    <h3>QA Tester - itegGO Consulting</h3>
-    <p>Junio 2026 - Actualidad</p>
-    <ul>
-      <li>Diseño y ejecución de planes de prueba</li>
-      <li>Testing de APIs con Postman</li>
-      <li>Validación de datos (BigQuery, SQL)</li>
-      <li>Gestión de incidencias (Jira, Xray)</li>
-    </ul>
+<div class="terminal-window">
+  <div class="term-bar">
+    <div class="term-dots"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+    <div class="term-path">~/cv.sh</div>
   </div>
 
-  <div class="card">
-    <h3>Becario QA & Arquitectura - Prosegur</h3>
-    <p>Marzo 2026 - Junio 2026</p>
-    <ul>
-      <li>Testing de rendimiento con JMeter</li>
-      <li>Análisis de métricas</li>
-      <li>Calidad de código (SonarQube)</li>
-      <li>Documentación en Jira y Confluence, soporte a procesos ITSM y consultas en BBDD.</li>
-      <li>Pequeños script para automatizar algunas tareas</li>
-    </ul>
+  <div class="container">
+
+    <header class="hero">
+      <div class="hero-top">
+        <svg class="logo-mark" width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="lg1" x1="0" y1="0" x2="46" y2="46" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#4fc3f7"/>
+              <stop offset="1" stop-color="#34d399"/>
+            </linearGradient>
+          </defs>
+          <path d="M23 2 L41 9 V22 C41 32 33 39 23 44 C13 39 5 32 5 22 V9 Z" fill="#111827" stroke="url(#lg1)" stroke-width="2"/>
+          <path d="M15 23 L20.5 28.5 L31 17" stroke="url(#lg1)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div>
+          <h1>César Calvo Martínez</h1>
+          <p class="subtitle">SW QA Tester Junior</p>
+        </div>
+      </div>
+
+      <p class="intro">
+        Especializado en testing funcional, APIs y rendimiento. Enfocado en evolucionar hacia automatización de pruebas y calidad continua.
+      </p>
+
+      <div class="hero-actions">
+        <button type="button" id="downloadBtn" class="btn btn-primary">⤓ Descargar PDF</button>
+      </div>
+    </header>
+
+    <section class="section">
+      <h2>Sobre mí</h2>
+      <p>
+        QA Tester Junior con formación en Desarrollo de Aplicaciones Web (DAW), dando mis primeros pasos profesionales en testing funcional y manual, pruebas de API y gestión de incidencias con Jira.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Experiencia</h2>
+
+      <div class="card">
+        <h3>QA Tester - itegGO Consulting</h3>
+        <p class="meta"><span class="status-dot" title="Puesto actual"></span> Junio 2026 - Actualidad</p>
+        <ul>
+          <li>Diseño y ejecución de planes de prueba</li>
+          <li>Testing de APIs con Postman</li>
+          <li>Validación de datos (BigQuery, SQL)</li>
+          <li>Gestión de incidencias (Jira, Xray)</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Becario QA & Arquitectura - Prosegur</h3>
+        <p class="meta">Marzo 2026 - Junio 2026</p>
+        <ul>
+          <li>Testing de rendimiento con JMeter</li>
+          <li>Análisis de métricas</li>
+          <li>Calidad de código (SonarQube)</li>
+          <li>Documentación en Jira y Confluence, soporte a procesos ITSM y consultas en BBDD.</li>
+          <li>Pequeños script para automatizar algunas tareas</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Skills</h2>
+      <div class="skills">
+        <span>QA Testing</span>
+        <span>API Testing</span>
+        <span>JMeter</span>
+        <span>Postman</span>
+        <span>Jira</span>
+        <span>postgreSQL</span>
+        <span>SonarQube</span>
+        <span>Java</span>
+        <span>Python</span>
+        <span>JavaScript</span>
+        <span>PHP</span>
+        <span>HTML5</span>
+        <span>CSS</span>
+        <span>postgreSQL</span>
+        <span>BigQuery</span>
+        <span>pgAdmin4</span>
+        <span>MySQL</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Proyectos</h2>
+
+      <div class="card">
+        <h3>Workyroom</h3>
+        <p>Proyecto de fin de grado enfocado en gestión de espacios de trabajo.</p>
+      </div>
+
+      <div class="card">
+        <h3>Tienda Ciclismo</h3>
+        <p>Proyecto web de e-commerce con gestión de productos.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Contacto</h2>
+      <div class="contact-card">
+        <div class="contact-row">
+          <span>📧 cesarorche@hotmail.com</span>
+          <button type="button" class="icon-btn" id="copyEmailBtn">Copiar</button>
+        </div>
+        <div class="social-links">
+          <a href="https://github.com/cesarorche/" target="_blank" rel="noopener">🔗 GitHub</a>
+          <a href="https://www.linkedin.com/in/c%C3%A9sar-calvo-mart%C3%ADnez-67b383382" target="_blank" rel="noopener">💼 LinkedIn</a>
+        </div>
+      </div>
+    </section>
+
   </div>
-
-  <h2>Skills</h2>
-  <div class="skills">
-    <span>QA Testing</span>
-    <span>API Testing</span>
-    <span>JMeter</span>
-    <span>Postman</span>
-    <span>Jira</span>
-    <span>postgreSQL</span>
-    <span>SonarQube</span>
-    <span>Java</span>
-    <span>Python</span>
-    <span>JavaScript</span>
-    <span>PHP</span> 
-    <span>HTML5</span>
-    <span>CSS</span> 
-    <span>postgreSQL</span>
-    <span>BigQuery</span>
-    <span>pgAdmin4</span>
-    <span>MySQL</span>
-  </div>
-
-  <h2>Proyectos</h2>
-
-  <div class="card">
-    <h3>Workyroom</h3>
-    <p>Proyecto de fin de grado enfocado en gestión de espacios de trabajo.</p>
-  </div>
-
-  <div class="card">
-    <h3>Tienda Ciclismo</h3>
-    <p>Proyecto web de e-commerce con gestión de productos.</p>
-  </div>
-
-  <h2>Contacto</h2>
-  <p class="contact">
-    📧 cesarorche@hotmail.com <br><br>
-    <a href="https://github.com/cesarorche/">🔗 GitHub</a><br><br>
-    <a href="https://www.linkedin.com/in/c%C3%A9sar-calvo-mart%C3%ADnez-67b383382">💼 LinkedIn</a>
-  </p>
-
 </div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  var sections = document.querySelectorAll('.section');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    }, {threshold:0.15});
+    sections.forEach(function(s){ obs.observe(s); });
+  } else {
+    sections.forEach(function(s){ s.classList.add('visible'); });
+  }
+
+  var toast = document.getElementById('toast');
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(function(){ toast.classList.remove('show'); }, 2200);
+  }
+
+  var copyBtn = document.getElementById('copyEmailBtn');
+  if(copyBtn){
+    copyBtn.addEventListener('click', function(){
+      var email = 'cesarorche@hotmail.com';
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(email)
+          .then(function(){ showToast('✓ Email copiado'); })
+          .catch(function(){ showToast('No se pudo copiar'); });
+      } else {
+        showToast('No se pudo copiar');
+      }
+    });
+  }
+
+  var downloadBtn = document.getElementById('downloadBtn');
+  if(downloadBtn){
+    downloadBtn.addEventListener('click', function(){ window.print(); });
+  }
+})();
+</script>
 
 </body>
 </html>
