@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<noscript><style>.boot-overlay{display:none !important;}</style></noscript>
 
 <style>
   :root{
@@ -81,6 +82,22 @@
     letter-spacing:.02em;
   }
 
+  .term-body-wrap{position:relative;}
+
+  .boot-overlay{
+    position:absolute; inset:0; z-index:15;
+    background:var(--surface);
+    padding:40px 44px;
+    font-family:var(--font-mono);
+    font-size:.82rem;
+    color:var(--green);
+    cursor:pointer;
+    overflow:hidden;
+  }
+  .boot-overlay #bootLines{margin:0; white-space:pre-wrap; line-height:1.8;}
+  .boot-overlay.hide{opacity:0; pointer-events:none; transition:opacity .4s ease;}
+  .boot-hint{position:absolute; bottom:18px; right:22px; font-size:.68rem; color:var(--text-faint);}
+
   .container{max-width:900px; margin:auto; padding:36px 44px 56px;}
 
   .hero-top{display:flex; align-items:center; gap:18px; margin-bottom:16px;}
@@ -102,7 +119,7 @@
     margin:0;
     letter-spacing:.02em;
   }
-  .subtitle::before{content:""; color:var(--text-faint);}
+  .subtitle::before{content:"$ "; color:var(--text-faint);}
 
   .intro{
     color:var(--text-muted);
@@ -134,7 +151,29 @@
   }
   .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 24px -10px rgba(52,211,153,.5);}
   .btn-ghost:hover{border-color:var(--cyan-dim); color:var(--cyan); transform:translateY(-2px);}
-  button:focus-visible, a:focus-visible{outline:2px solid var(--cyan); outline-offset:2px;}
+  button:focus-visible, a:focus-visible, input:focus-visible{outline:2px solid var(--cyan); outline-offset:2px;}
+
+  .term-cli{
+    margin-top:26px;
+    background:#0d1220;
+    border:1px solid var(--border-soft);
+    border-radius:10px;
+    padding:14px 16px;
+    font-family:var(--font-mono);
+    font-size:.82rem;
+  }
+  .term-cli-line{display:flex; align-items:center; gap:8px;}
+  .term-cli-prompt{color:var(--green); flex-shrink:0;}
+  .term-cli-input{
+    flex:1; background:transparent; border:none; outline:none;
+    color:var(--text); font-family:var(--font-mono); font-size:.85rem;
+  }
+  .term-cli-input::placeholder{color:var(--text-faint);}
+  .term-cli-output{
+    margin:0; white-space:pre-wrap; color:var(--text-muted);
+    max-height:220px; overflow:auto;
+  }
+  .term-cli-output:not(:empty){margin-top:10px;}
 
   h2{
     font-family:var(--font-mono);
@@ -146,7 +185,7 @@
     border-bottom:1px solid var(--border-soft);
     display:flex; align-items:center; gap:9px;
   }
-  h2::before{content:"//"; color:var(--green); font-weight:700;}
+  h2::before{content:attr(data-tc); color:var(--green); font-weight:700; letter-spacing:.02em;}
 
   .section{
     margin-top:44px;
@@ -174,21 +213,38 @@
     border-left-color:var(--green);
   }
   .card h3{margin:0 0 6px; font-size:1rem; font-family:var(--font-mono); color:var(--text);}
-  .card .meta{
-    display:flex; align-items:center; gap:8px; margin:0 0 12px;
-    font-family:var(--font-mono); font-size:.8rem; color:var(--text-faint);
-  }
 
-  .status-dot{
-    width:8px; height:8px; border-radius:50%; background:var(--green); display:inline-block;
-    animation:pulse 2s infinite;
+  .git-log{position:relative; padding-left:26px;}
+  .git-log::before{
+    content:""; position:absolute; left:5px; top:6px; bottom:6px; width:2px;
+    background:var(--border-soft);
   }
+  .commit{position:relative; padding-bottom:28px;}
+  .commit:last-child{padding-bottom:0;}
+  .commit-dot{
+    position:absolute; left:-26px; top:5px; width:12px; height:12px;
+    border-radius:50%; background:var(--surface-2); border:2px solid var(--cyan-dim);
+  }
+  .commit.current .commit-dot{
+    border-color:var(--green); background:var(--green); animation:pulse 2s infinite;
+  }
+  .commit-body{
+    background:var(--surface-2); border:1px solid var(--border-soft); border-radius:10px;
+    padding:16px 18px;
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .commit-body:hover{
+    transform:translateY(-3px); box-shadow:0 14px 28px -14px rgba(0,0,0,.5); border-color:var(--cyan-dim);
+  }
+  .commit-body h3{margin:0 0 4px; font-family:var(--font-mono); font-size:1rem; color:var(--text);}
+  .commit-body .meta{font-family:var(--font-mono); font-size:.8rem; color:var(--text-faint); margin:0 0 12px;}
+
   @keyframes pulse{
     0%{box-shadow:0 0 0 0 rgba(52,211,153,.55);}
     70%{box-shadow:0 0 0 8px rgba(52,211,153,0);}
     100%{box-shadow:0 0 0 0 rgba(52,211,153,0);}
   }
-  @media (prefers-reduced-motion:reduce){ .status-dot{animation:none;} }
+  @media (prefers-reduced-motion:reduce){ .commit.current .commit-dot{animation:none;} }
 
   ul{list-style:none; padding-left:0; margin:0; display:grid; gap:7px;}
   li{position:relative; padding-left:20px; font-size:.93rem;}
@@ -245,19 +301,31 @@
   }
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
 
+  .confetti-bit{
+    position:fixed; top:-10px; width:7px; height:7px; border-radius:2px; z-index:60;
+    animation:confetti-fall 1.2s ease-in forwards;
+  }
+  @keyframes confetti-fall{ to{ transform:translateY(100vh) rotate(360deg); opacity:0; } }
+
   @media print{
-    .bg-grid, .term-bar, .hero-actions, .icon-btn, .toast{display:none !important;}
+    .bg-grid, .term-bar, .hero-actions, .icon-btn, .toast, .term-cli, .boot-overlay, .confetti-bit{display:none !important;}
     body{background:#fff !important; color:#111 !important;}
     .terminal-window{box-shadow:none; border:none; margin:0; max-width:100%;}
-    .card, .skills span, .social-links a{background:#fff !important; color:#111 !important; border-color:#ccc !important;}
-    h1,h2,h3,.subtitle,.card h3{color:#111 !important;}
+    .card, .commit-body, .skills span, .social-links a{background:#fff !important; color:#111 !important; border-color:#ccc !important;}
+    h1,h2,h3,.subtitle,.card h3,.commit-body h3{color:#111 !important;}
+    h2::before{color:#111 !important;}
+    .commit-body .meta, .card p, li{color:#333 !important;}
+    li::before{color:#666 !important;}
     a{color:#111 !important; text-decoration:underline;}
+    .git-log::before{background:#ccc !important;}
+    .commit-dot{background:#fff !important; border-color:#666 !important; box-shadow:none !important; animation:none !important;}
   }
 
   @media (max-width:600px){
     .container{padding:28px 22px 44px;}
     .hero-top{flex-direction:column; align-items:flex-start; gap:10px;}
     .contact-row{flex-direction:column; align-items:flex-start;}
+    .boot-overlay{padding:26px 22px;}
   }
 </style>
 </head>
@@ -272,120 +340,145 @@
     <div class="term-path">~/cv.sh</div>
   </div>
 
-  <div class="container">
+  <div class="term-body-wrap">
 
-    <header class="hero">
-      <div class="hero-top">
-        <svg class="logo-mark" width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <defs>
-            <linearGradient id="lg1" x1="0" y1="0" x2="46" y2="46" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#4fc3f7"/>
-              <stop offset="1" stop-color="#34d399"/>
-            </linearGradient>
-          </defs>
-          <path d="M23 2 L41 9 V22 C41 32 33 39 23 44 C13 39 5 32 5 22 V9 Z" fill="#111827" stroke="url(#lg1)" stroke-width="2"/>
-          <path d="M15 23 L20.5 28.5 L31 17" stroke="url(#lg1)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <div>
-          <h1>César Calvo Martínez</h1>
-          <p class="subtitle">SW QA Tester Junior</p>
+    <div class="boot-overlay" id="bootOverlay" aria-hidden="true">
+      <pre id="bootLines"></pre>
+      <span class="boot-hint">(clic para omitir)</span>
+    </div>
+
+    <div class="container">
+
+      <header class="hero">
+        <div class="hero-top">
+          <svg class="logo-mark" width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="lg1" x1="0" y1="0" x2="46" y2="46" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#4fc3f7"/>
+                <stop offset="1" stop-color="#34d399"/>
+              </linearGradient>
+            </defs>
+            <path d="M23 2 L41 9 V22 C41 32 33 39 23 44 C13 39 5 32 5 22 V9 Z" fill="#111827" stroke="url(#lg1)" stroke-width="2"/>
+            <path d="M15 23 L20.5 28.5 L31 17" stroke="url(#lg1)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div>
+            <h1>César Calvo Martínez</h1>
+            <p class="subtitle">SW QA Tester Junior</p>
+          </div>
         </div>
-      </div>
 
-      <p class="intro">
-        Especializado en testing funcional, APIs y rendimiento. Enfocado en evolucionar hacia automatización de pruebas y calidad continua.
-      </p>
+        <p class="intro">
+          Especializado en testing funcional, APIs y rendimiento. Enfocado en evolucionar hacia automatización de pruebas y calidad continua.
+        </p>
 
-      <div class="hero-actions">
-        <button type="button" id="downloadBtn" class="btn btn-primary">⤓ Descargar PDF</button>
-      </div>
-    </header>
-
-    <section class="section">
-      <h2>Sobre mí</h2>
-      <p>
-        QA Tester Junior con formación en Desarrollo de Aplicaciones Web (DAW), dando mis primeros pasos profesionales en testing funcional y manual, pruebas de API y gestión de incidencias con Jira.
-      </p>
-    </section>
-
-    <section class="section">
-      <h2>Experiencia</h2>
-
-      <div class="card">
-        <h3>QA Tester - itegGO Consulting</h3>
-        <p class="meta"><span class="status-dot" title="Puesto actual"></span> Junio 2026 - Actualidad</p>
-        <ul>
-          <li>Diseño y ejecución de planes de prueba</li>
-          <li>Testing de APIs con Postman</li>
-          <li>Validación de datos (BigQuery, SQL)</li>
-          <li>Gestión de incidencias (Jira, Xray)</li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <h3>Becario QA & Arquitectura - Prosegur</h3>
-        <p class="meta">Marzo 2026 - Junio 2026</p>
-        <ul>
-          <li>Testing de rendimiento con JMeter</li>
-          <li>Análisis de métricas</li>
-          <li>Calidad de código (SonarQube)</li>
-          <li>Documentación en Jira y Confluence, soporte a procesos ITSM y consultas en BBDD.</li>
-          <li>Pequeños script para automatizar algunas tareas</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>Skills</h2>
-      <div class="skills">
-        <span>QA Testing</span>
-        <span>API Testing</span>
-        <span>JMeter</span>
-        <span>Postman</span>
-        <span>Jira</span>
-        <span>postgreSQL</span>
-        <span>SonarQube</span>
-        <span>Java</span>
-        <span>Python</span>
-        <span>JavaScript</span>
-        <span>PHP</span>
-        <span>HTML5</span>
-        <span>CSS</span>
-        <span>postgreSQL</span>
-        <span>BigQuery</span>
-        <span>pgAdmin4</span>
-        <span>MySQL</span>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>Proyectos</h2>
-
-      <div class="card">
-        <h3>Workyroom</h3>
-        <p>Proyecto de fin de grado enfocado en gestión de espacios de trabajo.</p>
-      </div>
-
-      <div class="card">
-        <h3>Tienda Ciclismo</h3>
-        <p>Proyecto web de e-commerce con gestión de productos.</p>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>Contacto</h2>
-      <div class="contact-card">
-        <div class="contact-row">
-          <span>📧 cesarorche@hotmail.com</span>
-          <button type="button" class="icon-btn" id="copyEmailBtn">Copiar</button>
+        <div class="hero-actions">
+          <button type="button" id="downloadBtn" class="btn btn-primary">⤓ Descargar PDF</button>
         </div>
-        <div class="social-links">
-          <a href="https://github.com/cesarorche/" target="_blank" rel="noopener">🔗 GitHub</a>
-          <a href="https://www.linkedin.com/in/c%C3%A9sar-calvo-mart%C3%ADnez-67b383382" target="_blank" rel="noopener">💼 LinkedIn</a>
-        </div>
-      </div>
-    </section>
 
+        <!-- psst, si estás mirando el código: prueba "sudo hire_cesar" en la terminal de abajo -->
+        <div class="term-cli" id="termCli">
+          <div class="term-cli-line">
+            <label for="cliInput" class="term-cli-prompt">cesar@qa:~$</label>
+            <input type="text" id="cliInput" class="term-cli-input" autocomplete="off" spellcheck="false" placeholder="escribe 'help' y pulsa Enter" aria-label="Terminal interactiva, escribe un comando">
+          </div>
+          <pre class="term-cli-output" id="cliOutput" aria-live="polite"></pre>
+        </div>
+      </header>
+
+      <section class="section">
+        <h2 data-tc="TC-001">Sobre mí</h2>
+        <p>
+          QA Tester Junior con formación en Desarrollo de Aplicaciones Web (DAW), dando mis primeros pasos profesionales en testing funcional y manual, pruebas de API y gestión de incidencias con Jira.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2 data-tc="TC-002">Experiencia</h2>
+
+        <div class="git-log">
+          <div class="commit current">
+            <div class="commit-dot" title="Puesto actual"></div>
+            <div class="commit-body">
+              <h3>QA Tester - itegGO Consulting</h3>
+              <p class="meta">Junio 2026 - Actualidad</p>
+              <ul>
+                <li>Diseño y ejecución de planes de prueba</li>
+                <li>Testing de APIs con Postman</li>
+                <li>Validación de datos (BigQuery, SQL)</li>
+                <li>Gestión de incidencias (Jira, Xray)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="commit">
+            <div class="commit-dot"></div>
+            <div class="commit-body">
+              <h3>Becario QA & Arquitectura - Prosegur</h3>
+              <p class="meta">Marzo 2026 - Junio 2026</p>
+              <ul>
+                <li>Testing de rendimiento con JMeter</li>
+                <li>Análisis de métricas</li>
+                <li>Calidad de código (SonarQube)</li>
+                <li>Documentación en Jira y Confluence, soporte a procesos ITSM y consultas en BBDD.</li>
+                <li>Pequeños script para automatizar algunas tareas</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 data-tc="TC-003">Skills</h2>
+        <div class="skills">
+          <span>QA Testing</span>
+          <span>API Testing</span>
+          <span>JMeter</span>
+          <span>Postman</span>
+          <span>Jira</span>
+          <span>postgreSQL</span>
+          <span>SonarQube</span>
+          <span>Java</span>
+          <span>Python</span>
+          <span>JavaScript</span>
+          <span>PHP</span>
+          <span>HTML5</span>
+          <span>CSS</span>
+          <span>postgreSQL</span>
+          <span>BigQuery</span>
+          <span>pgAdmin4</span>
+          <span>MySQL</span>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 data-tc="TC-004">Proyectos</h2>
+
+        <div class="card">
+          <h3>Workyroom</h3>
+          <p>Proyecto de fin de grado enfocado en gestión de espacios de trabajo.</p>
+        </div>
+
+        <div class="card">
+          <h3>Tienda Ciclismo</h3>
+          <p>Proyecto web de e-commerce con gestión de productos.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 data-tc="TC-005">Contacto</h2>
+        <div class="contact-card">
+          <div class="contact-row">
+            <span>📧 cesarorche@hotmail.com</span>
+            <button type="button" class="icon-btn" id="copyEmailBtn">Copiar</button>
+          </div>
+          <div class="social-links">
+            <a href="https://github.com/cesarorche/" target="_blank" rel="noopener">🔗 GitHub</a>
+            <a href="https://www.linkedin.com/in/c%C3%A9sar-calvo-mart%C3%ADnez-67b383382" target="_blank" rel="noopener">💼 LinkedIn</a>
+          </div>
+        </div>
+      </section>
+
+    </div>
   </div>
 </div>
 
@@ -393,6 +486,8 @@
 
 <script>
 (function(){
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   var sections = document.querySelectorAll('.section');
   if('IntersectionObserver' in window){
     var obs = new IntersectionObserver(function(entries){
@@ -430,6 +525,87 @@
   var downloadBtn = document.getElementById('downloadBtn');
   if(downloadBtn){
     downloadBtn.addEventListener('click', function(){ window.print(); });
+  }
+
+  function burstConfetti(){
+    if(reduceMotion) return;
+    var colors = ['#34d399','#4fc3f7','#fbbf24'];
+    for(var i=0;i<16;i++){
+      var el = document.createElement('span');
+      el.className = 'confetti-bit';
+      el.style.left = (42 + Math.random()*16) + '%';
+      el.style.background = colors[i % colors.length];
+      el.style.animationDelay = (Math.random()*0.2) + 's';
+      document.body.appendChild(el);
+      (function(node){ setTimeout(function(){ node.remove(); }, 1400); })(el);
+    }
+  }
+
+  var CLI_DATA = {
+    whoami: 'César Calvo Martínez -- SW QA Tester Junior en itegGO Consulting (proyectos del grupo DIA).',
+    skills: 'QA Testing, API Testing, JMeter, Postman, Jira, postgreSQL, SonarQube, Java, Python, JavaScript, PHP, HTML5, CSS, BigQuery, pgAdmin4, MySQL',
+    experiencia: 'itegGO Consulting -- QA Tester (Junio 2026 - Actualidad)\nProsegur -- Becario QA & Arquitectura (Marzo 2026 - Junio 2026)',
+    proyectos: 'Workyroom -- proyecto de fin de grado (gestion de espacios de trabajo)\nTienda Ciclismo -- e-commerce con gestion de productos',
+    contacto: 'cesarorche@hotmail.com | github.com/cesarorche | linkedin.com/in/cesar-calvo-martinez',
+    help: 'Comandos disponibles: whoami, skills, experiencia, proyectos, contacto, clear\n(psst... hay alguno mas si te atreves)'
+  };
+
+  var cliInput = document.getElementById('cliInput');
+  var cliOutput = document.getElementById('cliOutput');
+  if(cliInput && cliOutput){
+    cliInput.addEventListener('keydown', function(ev){
+      if(ev.key !== 'Enter') return;
+      var raw = cliInput.value.trim();
+      if(!raw){ return; }
+      var cmd = raw.toLowerCase();
+      var line = '$ ' + raw;
+      var sep = cliOutput.textContent ? '\n\n' : '';
+      if(cmd === 'clear'){
+        cliOutput.textContent = '';
+      } else if(cmd === 'sudo hire_cesar' || cmd === 'sudo hire cesar'){
+        cliOutput.textContent += sep + line + '\n[sudo] password: ********\nPermiso concedido. ✓\nContratando a Cesar... 100%\n¡Buena decision! -> cesarorche@hotmail.com';
+        burstConfetti();
+      } else if(CLI_DATA.hasOwnProperty(cmd)){
+        cliOutput.textContent += sep + line + '\n' + CLI_DATA[cmd];
+      } else {
+        cliOutput.textContent += sep + line + '\ncommand not found: ' + raw + ' (escribe "help")';
+      }
+      cliInput.value = '';
+      cliOutput.scrollTop = cliOutput.scrollHeight;
+    });
+  }
+
+  var bootOverlay = document.getElementById('bootOverlay');
+  if(bootOverlay){
+    if(reduceMotion){
+      bootOverlay.remove();
+    } else {
+      var linesEl = document.getElementById('bootLines');
+      var lines = [
+        '$ ./cv.sh',
+        'Cargando perfil... OK',
+        'Comprobando skills... OK',
+        'Ejecutando test suite: experiencia [OK] proyectos [OK] contacto [OK]',
+        '> Listo. Bienvenido/a.'
+      ];
+      var i = 0;
+      var finished = false;
+      function finish(){
+        if(finished) return;
+        finished = true;
+        bootOverlay.classList.add('hide');
+        setTimeout(function(){ if(bootOverlay.parentNode){ bootOverlay.remove(); } }, 450);
+      }
+      function next(){
+        if(i >= lines.length){ setTimeout(finish, 500); return; }
+        linesEl.textContent += (i ? '\n' : '') + lines[i];
+        i++;
+        setTimeout(next, 260);
+      }
+      bootOverlay.addEventListener('click', finish);
+      setTimeout(finish, 4500);
+      next();
+    }
   }
 })();
 </script>
