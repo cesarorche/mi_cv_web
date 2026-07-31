@@ -214,6 +214,52 @@
   }
   .card h3{margin:0 0 6px; font-size:1rem; font-family:var(--font-mono); color:var(--text);}
 
+  .card-expandable{cursor:pointer; position:relative; padding-right:42px;}
+  .card-expandable:focus-visible{outline:2px solid var(--cyan); outline-offset:2px;}
+  .card-chevron{
+    position:absolute; top:18px; right:18px; width:18px; height:18px;
+    color:var(--text-faint);
+    transition:transform .25s ease, color .18s ease;
+  }
+  .card-expandable:hover .card-chevron{color:var(--cyan-dim);}
+  .card-expandable[aria-expanded="true"] .card-chevron{transform:rotate(180deg); color:var(--green);}
+
+  .project-detail{
+    overflow:hidden; max-height:0; opacity:0;
+    transition:max-height .35s ease, opacity .3s ease, margin .35s ease;
+  }
+  .project-detail.open{max-height:900px; opacity:1; margin:-8px 0 16px;}
+  @media (prefers-reduced-motion:reduce){ .project-detail{transition:none;} }
+
+  .project-detail-inner{
+    background:#0d1220; border:1px solid var(--border-soft); border-left:3px solid var(--green);
+    border-radius:10px; padding:18px 20px;
+  }
+  .project-detail-inner p{margin:0 0 12px; font-size:.92rem; color:var(--text-muted);}
+  .project-detail-inner h4{
+    margin:0 0 8px; font-family:var(--font-mono); font-size:.78rem;
+    color:var(--cyan); text-transform:uppercase; letter-spacing:.05em;
+  }
+  .project-detail-inner .tech-row{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;}
+  .project-detail-inner .tech-row span{
+    font-family:var(--font-mono); font-size:.72rem; padding:5px 10px; border-radius:6px;
+    background:var(--surface-2); border:1px solid var(--border-soft); color:var(--text-muted);
+  }
+  .repo-link{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:var(--font-mono); font-size:.8rem; font-weight:600;
+    color:#08150f; background:linear-gradient(135deg, var(--green-dim), var(--green));
+    padding:8px 14px; border-radius:8px; text-decoration:none; margin-top:2px;
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .repo-link:hover{transform:translateY(-2px); box-shadow:0 10px 20px -10px rgba(52,211,153,.5);}
+
+  .shot-gallery{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+  .shot-status{font-size:.85rem; color:var(--text-faint); margin:0 0 14px;}
+  .shot-link{display:block; border-radius:8px; overflow:hidden; border:1px solid var(--border-soft); transition:transform .18s ease, border-color .18s ease;}
+  .shot-link:hover{transform:translateY(-2px); border-color:var(--cyan-dim);}
+  .shot-link img{display:block; width:120px; height:90px; object-fit:cover;}
+
   .git-log{position:relative; padding-left:26px;}
   .git-log::before{
     content:""; position:absolute; left:5px; top:6px; bottom:6px; width:2px;
@@ -308,7 +354,7 @@
   @keyframes confetti-fall{ to{ transform:translateY(100vh) rotate(360deg); opacity:0; } }
 
   @media print{
-    .bg-grid, .term-bar, .hero-actions, .icon-btn, .toast, .term-cli, .boot-overlay, .confetti-bit{display:none !important;}
+    .bg-grid, .term-bar, .hero-actions, .icon-btn, .toast, .term-cli, .boot-overlay, .confetti-bit, .project-detail, .card-chevron{display:none !important;}
     body{background:#fff !important; color:#111 !important;}
     .terminal-window{box-shadow:none; border:none; margin:0; max-width:100%;}
     .card, .commit-body, .skills span, .social-links a{background:#fff !important; color:#111 !important; border-color:#ccc !important;}
@@ -453,14 +499,50 @@
       <section class="section">
         <h2 data-tc="TC-004">Proyectos</h2>
 
-        <div class="card">
+        <div class="card card-expandable" id="workyroomCard" role="button" tabindex="0" aria-expanded="false" aria-controls="workyroomDetail">
           <h3>Workyroom</h3>
           <p>Proyecto de fin de grado enfocado en gestión de espacios de trabajo.</p>
+          <svg class="card-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="project-detail" id="workyroomDetail">
+          <div class="project-detail-inner">
+            <h4>Sobre el proyecto</h4>
+            <p>Aplicación web para gestionar espacios de coworking en un entorno rural: registro e inicio de sesión, consulta y reserva de espacios por franjas horarias, carrito de reservas y un panel de administración con distintos niveles de rol (usuario, administrador y super administrador). Incluye envío automático de emails (confirmación y anulación de reservas, verificación de cuenta, recuperación de contraseña) mediante PHPMailer.</p>
+            <h4>Tecnologías</h4>
+            <div class="tech-row">
+              <span>PHP</span><span>MySQL</span><span>HTML5</span><span>CSS3</span><span>Bootstrap 5</span><span>JavaScript</span><span>PHPMailer</span>
+            </div>
+            <h4>Capturas (en vivo desde GitHub)</h4>
+            <div class="shot-gallery" id="workyroomShots"><p class="shot-status">Buscando capturas en el repositorio…</p></div>
+            <p>Proyecto terminado y funcional, desarrollado junto a Natalia Aguilera Hervás.</p>
+            <p>Base de datos relacional en MySQL, importada y administrada con phpMyAdmin (incluido en XAMPP).</p>
+            <a class="repo-link" href="https://github.com/cesarorche/WorkyRoom-portfolio" target="_blank" rel="noopener">Ver repositorio en GitHub ↗</a>
+          </div>
         </div>
 
-        <div class="card">
+        <div class="card card-expandable" id="ciclismoCard" role="button" tabindex="0" aria-expanded="false" aria-controls="ciclismoDetail">
           <h3>Tienda Ciclismo</h3>
           <p>Proyecto web de e-commerce con gestión de productos.</p>
+          <svg class="card-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="project-detail" id="ciclismoDetail">
+          <div class="project-detail-inner">
+            <h4>Sobre el proyecto</h4>
+            <p>Tienda online de bicicletas desarrollada como práctica de desarrollo full stack: sistema de login y registro de usuarios, carrito de compra, gestión de productos y panel de administración.</p>
+            <h4>Tecnologías</h4>
+            <div class="tech-row">
+              <span>PHP</span><span>HTML</span><span>CSS</span><span>JavaScript</span><span>MySQL</span>
+            </div>
+            <h4>Capturas (en vivo desde GitHub)</h4>
+            <div class="shot-gallery" id="ciclismoShots"><p class="shot-status">Buscando capturas en el repositorio…</p></div>
+            <p>Base de datos relacional en MySQL, gestionada con phpMyAdmin dentro del entorno local XAMPP/WAMP.</p>
+            <p>Publicado como demostración de código; requiere servidor local (XAMPP/WAMP) para ejecutarse.</p>
+            <a class="repo-link" href="https://github.com/cesarorche/Mini-Tienda-Ciclismo" target="_blank" rel="noopener">Ver repositorio en GitHub ↗</a>
+          </div>
         </div>
       </section>
 
@@ -547,7 +629,7 @@
     experiencia: 'itegGO Consulting -- QA Tester (Junio 2026 - Actualidad)\nProsegur -- Becario QA & Arquitectura (Marzo 2026 - Junio 2026)',
     proyectos: 'Workyroom -- proyecto de fin de grado (gestion de espacios de trabajo)\nTienda Ciclismo -- e-commerce con gestion de productos',
     contacto: 'cesarorche@hotmail.com | github.com/cesarorche | linkedin.com/in/cesar-calvo-martinez',
-    help: 'Comandos disponibles: whoami, skills, experiencia, proyectos, contacto, clear\n(psst... hay alguno mas si te atreves, revisa el código..)'
+    help: 'Comandos disponibles: whoami, skills, experiencia, proyectos, contacto, clear\n(psst... hay alguno mas si te atreves)'
   };
 
   var cliInput = document.getElementById('cliInput');
@@ -574,6 +656,80 @@
       cliOutput.scrollTop = cliOutput.scrollHeight;
     });
   }
+
+  function loadRepoImages(owner, repoName, containerId, maxImages){
+    var container = document.getElementById(containerId);
+    if(!container) return;
+    var imgExt = /\.(png|jpe?g|gif|webp)$/i;
+
+    function render(files){
+      if(files.length === 0){ return false; }
+      container.innerHTML = '';
+      files.slice(0, maxImages).forEach(function(f){
+        var a = document.createElement('a');
+        a.href = 'https://github.com/' + owner + '/' + repoName + '/blob/main/' + f.path;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.className = 'shot-link';
+        var im = document.createElement('img');
+        im.src = 'https://raw.githubusercontent.com/' + owner + '/' + repoName + '/main/' + f.path;
+        im.alt = f.path;
+        im.loading = 'lazy';
+        a.appendChild(im);
+        container.appendChild(a);
+      });
+      return true;
+    }
+
+    function showFallback(){
+      container.innerHTML = '<p class="shot-status">No se pudieron cargar capturas automaticamente. <a href="https://github.com/' + owner + '/' + repoName + '" target="_blank" rel="noopener">Ver el repositorio</a></p>';
+    }
+
+    fetch('https://api.github.com/repos/' + owner + '/' + repoName + '/git/trees/main?recursive=1')
+      .then(function(res){ if(!res.ok) throw new Error('http ' + res.status); return res.json(); })
+      .then(function(data){
+        var tree = data.tree || [];
+        var candidates = tree.filter(function(it){
+          return it.type === 'blob' && imgExt.test(it.path) && (!it.size || it.size > 8000);
+        });
+        candidates.sort(function(a, b){
+          var score = function(it){ return /imagen|screenshot|captura|preview|demo/i.test(it.path) ? 0 : 1; };
+          return score(a) - score(b);
+        });
+        if(render(candidates)) return;
+        var anyImages = tree.filter(function(it){ return it.type === 'blob' && imgExt.test(it.path); });
+        if(!render(anyImages)){ showFallback(); }
+      })
+      .catch(showFallback);
+  }
+
+  function setupExpandableCard(cardId, detailId, onFirstOpen){
+    var card = document.getElementById(cardId);
+    var detail = document.getElementById(detailId);
+    if(!card || !detail) return;
+    var opened = false;
+    var toggle = function(){
+      var isOpen = detail.classList.toggle('open');
+      card.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      if(isOpen && !opened){
+        opened = true;
+        if(typeof onFirstOpen === 'function'){ onFirstOpen(); }
+      }
+    };
+    card.addEventListener('click', toggle);
+    card.addEventListener('keydown', function(ev){
+      if(ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar'){
+        ev.preventDefault();
+        toggle();
+      }
+    });
+  }
+  setupExpandableCard('workyroomCard', 'workyroomDetail', function(){
+    loadRepoImages('cesarorche', 'WorkyRoom-portfolio', 'workyroomShots', 4);
+  });
+  setupExpandableCard('ciclismoCard', 'ciclismoDetail', function(){
+    loadRepoImages('cesarorche', 'Mini-Tienda-Ciclismo', 'ciclismoShots', 4);
+  });
 
   var bootOverlay = document.getElementById('bootOverlay');
   if(bootOverlay){
